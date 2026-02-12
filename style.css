@@ -4,18 +4,40 @@
     box-sizing: border-box;
 }
 
+html {
+    height: 100%;
+}
+
 body {
     background-color: #FFE4E8;
     font-family: 'Nunito', sans-serif;
+
+    /* Mobile-safe viewport height (prevents content getting clipped under the address bar) */
     min-height: 100vh;
+    min-height: 100svh;
+
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+
+    /* Allow vertical scrolling on small screens (prevents buttons getting cut off) */
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    padding: 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+
     background-image:
         radial-gradient(circle at 15% 85%, #ffb3c1 0%, transparent 40%),
         radial-gradient(circle at 85% 15%, #ff8fa3 0%, transparent 40%),
         radial-gradient(circle at 50% 50%, #fff0f3 0%, transparent 60%);
+}
+
+/* On short screens, top-align so content doesn't get clipped */
+@media (max-height: 720px) {
+    body {
+        align-items: flex-start;
+    }
 }
 
 /* Floating hearts background */
@@ -54,11 +76,13 @@ body {
     position: relative;
     z-index: 1;
     text-align: center;
-    padding: 40px 20px;
+    width: min(92vw, 680px);
+    padding: 40px 20px 96px;
 }
 
 h1 {
-    font-size: 2.4rem;
+    font-size: clamp(1.55rem, 5vw, 2.4rem);
+    line-height: 1.12;
     color: #d63384;
     font-weight: 900;
     margin-bottom: 20px;
@@ -78,8 +102,8 @@ h1 {
 }
 
 #cat-gif {
-    width: 200px;
-    height: 200px;
+    width: min(55vw, 200px);
+    height: min(55vw, 200px);
     object-fit: contain;
     filter: drop-shadow(0 8px 16px rgba(0,0,0,0.15));
     transition: opacity 0.3s ease;
@@ -99,10 +123,12 @@ h1 {
     color: white;
     border: none;
     border-radius: 16px;
-    font-size: 1.6rem;
+    font-size: clamp(1.15rem, 4.5vw, 1.6rem);
     font-weight: 900;
     font-family: 'Nunito', sans-serif;
     padding: 18px 45px;
+    max-width: 92vw;
+    touch-action: manipulation;
     cursor: pointer;
     transition: transform 0.15s, box-shadow 0.15s;
     box-shadow: 0 6px 20px rgba(76, 175, 80, 0.45);
@@ -123,19 +149,20 @@ h1 {
     color: white;
     border: none;
     border-radius: 12px;
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 3.8vw, 1rem);
     font-weight: 700;
     font-family: 'Nunito', sans-serif;
     padding: 12px 28px;
     cursor: pointer;
     transition: background 0.2s, left 0.25s ease, top 0.25s ease;
     box-shadow: 0 4px 14px rgba(231, 76, 60, 0.4);
+    max-width: 92vw;
+    touch-action: manipulation;
 }
 
 #no-btn:hover {
     background: linear-gradient(135deg, #c0392b, #a93226);
 }
-
 
 #tease-toast {
     margin-top: 14px;
@@ -157,8 +184,8 @@ h1 {
 /* Music toggle button */
 #music-toggle {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    right: calc(20px + env(safe-area-inset-right));
     background: rgba(255, 255, 255, 0.85);
     border: none;
     border-radius: 50%;
@@ -178,7 +205,7 @@ h1 {
 
 /* Yes page specific */
 .yes-container h1.yes-title {
-    font-size: 2.8rem;
+    font-size: clamp(1.8rem, 5.5vw, 2.8rem);
     animation: bounceTitle 0.6s ease infinite alternate;
 }
 
@@ -188,7 +215,7 @@ h1 {
 }
 
 .yes-message {
-    font-size: 1.4rem;
+    font-size: clamp(1.05rem, 4.2vw, 1.4rem);
     color: #e91e8c;
     font-weight: 700;
     margin-top: 24px;
@@ -201,6 +228,35 @@ h1 {
 }
 
 .yes-container #cat-gif {
-    width: 260px;
-    height: 260px;
+    width: min(70vw, 260px);
+    height: min(70vw, 260px);
+}
+
+/* Extra-tight phones (small width) */
+@media (max-width: 420px) {
+    .container {
+        padding: 26px 12px 96px;
+    }
+    .gif-container {
+        margin: 14px auto;
+    }
+    .buttons {
+        gap: 12px;
+        margin-top: 18px;
+    }
+}
+
+/* Landscape phones / very short screens */
+@media (max-height: 640px) {
+    .gif-container {
+        margin: 12px auto;
+    }
+    #cat-gif {
+        width: min(42vw, 170px);
+        height: min(42vw, 170px);
+    }
+    .yes-container #cat-gif {
+        width: min(48vw, 200px);
+        height: min(48vw, 200px);
+    }
 }
