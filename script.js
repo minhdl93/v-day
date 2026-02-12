@@ -91,11 +91,16 @@ function handleNoClick() {
     const msgIndex = Math.min(noClickCount, noMessages.length - 1)
     noBtn.textContent = noMessages[msgIndex]
 
-    // Grow the Yes button bigger each time
+    // Grow the Yes button each time, but keep it within the phone screen
     const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize)
-    yesBtn.style.fontSize = `${currentSize * 1.35}px`
-    const padY = Math.min(18 + noClickCount * 5, 60)
-    const padX = Math.min(45 + noClickCount * 10, 120)
+    const maxFontSize = Math.min(52, Math.max(28, window.innerWidth * 0.14))
+    const nextSize = Math.min(currentSize * 1.25, maxFontSize)
+    yesBtn.style.fontSize = `${nextSize}px`
+
+    const maxPadY = Math.round(window.innerHeight * 0.12)
+    const maxPadX = Math.round(window.innerWidth * 0.42)
+    const padY = Math.min(18 + noClickCount * 5, maxPadY)
+    const padX = Math.min(45 + noClickCount * 10, maxPadX)
     yesBtn.style.padding = `${padY}px ${padX}px`
 
     // Shrink No button to contrast
@@ -129,17 +134,24 @@ function enableRunaway() {
 }
 
 function runAway() {
-    const margin = 20
+    const margin = 16
     const btnW = noBtn.offsetWidth
     const btnH = noBtn.offsetHeight
-    const maxX = window.innerWidth - btnW - margin
-    const maxY = window.innerHeight - btnH - margin
 
-    const randomX = Math.random() * maxX + margin / 2
-    const randomY = Math.random() * maxY + margin / 2
+    // Avoid placing the No button under the music toggle (bottom-right)
+    const toggle = document.getElementById('music-toggle')
+    const toggleRect = toggle ? toggle.getBoundingClientRect() : null
+    const reservedRight = toggleRect ? (window.innerWidth - toggleRect.left + 8) : 0
+    const reservedBottom = toggleRect ? (window.innerHeight - toggleRect.top + 8) : 0
+
+    const maxX = Math.max(margin, window.innerWidth - btnW - margin - reservedRight)
+    const maxY = Math.max(margin, window.innerHeight - btnH - margin - reservedBottom)
+
+    const randomX = margin + Math.random() * Math.max(0, (maxX - margin))
+    const randomY = margin + Math.random() * Math.max(0, (maxY - margin))
 
     noBtn.style.position = 'fixed'
     noBtn.style.left = `${randomX}px`
     noBtn.style.top = `${randomY}px`
-    noBtn.style.zIndex = '50'
+    noBtn.style.zIndex = '150'
 }
